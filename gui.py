@@ -6,7 +6,8 @@ except ImportError:
     from tkinter import Entry, Frame, Label, StringVar, Listbox, Button, filedialog
     from tkinter.constants import *
     
-
+import os 
+import datetime
 
 
 
@@ -87,7 +88,21 @@ class UploadFile(Frame):
     def browse(self):
 
         browsedFile=filedialog.askopenfile(initialdir="/",title="select file", filetypes=(("text files", ".txt"),("all files","*.*")))
-        print(browsedFile)
+        print(browsedFile.name)
+        path = browsedFile.name
+        
+        modTimesinceEpoc = os.path.getmtime(path)
+        modificationTime = datetime.datetime.fromtimestamp(modTimesinceEpoc).strftime('%Y-%m-%d')
+        file_size = os.path.getsize(path)
+        all_file = path.split("/")
+        file_name = all_file[-1]
+        file_type = file_name.split(".")[-1]
+        print(modificationTime)
+        print(size)
+        print(filename)
+        print(file_type)
+        return [file_name, file_type, file_size, modificationTime]
+
   
         
 if __name__ == "__main__":
