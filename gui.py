@@ -1,12 +1,13 @@
 try:
-    from Tkinter import Entry, Frame, Label, StringVar, Listbox, Button
+    from Tkinter import Entry, Frame, Label, StringVar, Listbox, Button, filedialog
     from Tkconstants import *
 
 except ImportError:
-    from tkinter import Entry, Frame, Label, StringVar, Listbox, Button
+    from tkinter import Entry, Frame, Label, StringVar, Listbox, Button, filedialog
     from tkinter.constants import *
     
-
+import os 
+import datetime
 
 
 
@@ -16,11 +17,9 @@ class SearchBox(Frame):
     def __init__(self, master, entry_font=None, entry_background="white", entry_highlightthickness=1, button_ipadx=40, button_background="grey", button_foreground="white", button_font=None, opacity=0.8, placeholder=None, placeholder_font=None, placeholder_color="grey", spacing=3):
         Frame.__init__(self, master)
 
-        self.label = Label(self, text = "Browse Files (up to 5)")
-        self.label.pack(side= LEFT,fill=BOTH, ipady=1, padx=(0,spacing))
+        
         #browse button
-        self.browse_button = Button(self, text="Browse a file (up to 5)",command=self.browse)
-        self.browse_button.pack(fill=BOTH)
+        
         #-------------------------
         self.label = Label(self, text = "File Name")
         self.label.pack(side= LEFT,fill=BOTH, ipady=1, padx=(0,spacing))
@@ -37,9 +36,7 @@ class SearchBox(Frame):
         self.button_label.bind("<ButtonRelease-1>", self._on_execute_command)
 
     #browse a file function
-    def browse(self):
-        browsedFile=filedialog.askopenfile(initialdir="/",title="select file", filetypes=(("text files", ".txt"),("all files","*.*")))
-        print(browsedFile)
+    
     #---------------------------
 
     def get_text(self):
@@ -55,7 +52,6 @@ class SearchBox(Frame):
 
     def _on_execute_command(self, event):
         print(self.get_text())
-
 
 
 
@@ -79,8 +75,34 @@ class Results(Frame):
      def print_selection(self): 
         selection = self.list.curselection() 
         print([self.list.get(i) for i in selection]) 
+
         
-    
+class UploadFile(Frame):
+    def __init__(self, master):
+        Frame.__init__(self, master)
+        self.label = Label(self, text = "Browse Files (up to 5)")
+        self.label.pack(side= LEFT,fill=BOTH, ipady=1, padx=(0,3))
+        self.browse_button = Button(self, text="Browse a file", command=self.browse)
+        self.browse_button.pack(fill=BOTH)
+
+    def browse(self):
+
+        browsedFile=filedialog.askopenfile(initialdir="/",title="select file", filetypes=(("text files", ".txt"),("all files","*.*")))
+        print(browsedFile.name)
+        path = browsedFile.name
+        
+        modTimesinceEpoc = os.path.getmtime(path)
+        modificationTime = datetime.datetime.fromtimestamp(modTimesinceEpoc).strftime('%Y-%m-%d')
+        file_size = os.path.getsize(path)
+        all_file = path.split("/")
+        file_name = all_file[-1]
+        file_type = file_name.split(".")[-1]
+        print(modificationTime)
+        print(file_size)
+        print(file_name)
+        print(file_type)
+        return [file_name, file_type, file_size, modificationTime]
+
   
         
 if __name__ == "__main__":
@@ -96,10 +118,10 @@ if __name__ == "__main__":
 
     root = Tk()
 
-    root.geometry("500x500")
+    root.geometry("600x600")
     root.title("File sharing")
-
+    UploadFile(root).pack(pady=10, padx=10)
     SearchBox(root, placeholder="Type and press enter", entry_highlightthickness=0).pack(pady=10, padx=10)
     Results(root).pack(pady=10, padx=10)
-   
+    
     root.mainloop()
