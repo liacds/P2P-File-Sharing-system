@@ -19,20 +19,17 @@ def peerThread(connectionSocket):
         connectionSocket.close()
 
 
-     message2 = connectionSocket.recv(1024)
-     encoding = 'utf-8'
-     msg2=message2[0:].decode(encoding)
+    for i in range (5):
 
-     print(msg2)
-     filename = msg2.split(",")
-     filename = filename[0].split('<')[1]
-     print(filename)
-
-     files[filename] = msg2
-     #files[filename] = msg2
-     #print(files)
-     # filename = msg2.split(",")
-     # print(filename)
+        message2 = connectionSocket.recv(1024)
+        encoding = 'utf-8'
+        msg2=message2[0:].decode(encoding)
+        print(msg2)
+        filename = msg2.split(",")
+        filename = filename[0].split('<')[1]
+        print(filename)
+    
+        files[filename] = msg2
 
      connectionSocket.close()
 
