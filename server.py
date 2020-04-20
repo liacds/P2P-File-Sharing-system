@@ -19,18 +19,18 @@ def peerThread(connectionSocket):
         connectionSocket.close()
 
 
-     for i in range(5):
-        message2 = connectionSocket.recv(1024)
-        encoding = 'utf-8'
-        msg2=message2[0:].decode(encoding)
-        print(msg2)
-        filename = msg2.split(",")
-        filename = filename[0].split('<')[1]
-        print(filename)
-        if filename not in files:
-            files[filename] = [msg2]
-        else:
-            files[filename].append(msg2)
+     #for i in range(5):
+     message2 = connectionSocket.recv(1024)
+     encoding = 'utf-8'
+     msg2=message2[0:].decode(encoding)
+     print(msg2)
+     filename = msg2.split(",")
+     filename = filename[0].split('<')[1]
+     print(filename)
+     if filename not in files:
+         files[filename] = [msg2]
+     else:
+         files[filename].append(msg2)
     
 
     # search 
@@ -43,6 +43,9 @@ def peerThread(connectionSocket):
              if filename in files:
                 response=b"FOUND\r\n"
                 connectionSocket.send(response)
+                number = files[filename].length
+                number = str(number)
+                connectionSocket.send(number)
                 for i in files[filename]:
                     response = i.encode()
                     connectionSocket.send(response)
@@ -51,6 +54,12 @@ def peerThread(connectionSocket):
                 connectionSocket.send(response)
 
 
+     #bye 
+     message = connectionSocket.recv(1024)
+     encoding = 'utf-8'
+     message=message[0:].decode(encoding)
+     if message == "BYE":
+         connectionSocket.close()
 
 
 
@@ -59,7 +68,7 @@ def peerThread(connectionSocket):
 
 
 
-serverPort = 9999
+serverPort = 9998
 serverHostname = 'localhost'
 
 files = {}
