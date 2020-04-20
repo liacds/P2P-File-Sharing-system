@@ -58,10 +58,20 @@ class SearchBox(Frame):
         print(rmsg)
 
         if (rmsg=="FOUND\r\n"):
-            files=self.clientSocket.recv(1024)
+        #how many values for same key there are
+            numOfValuesInBytes=self.clientSocket.recv(1024)
             encoding = 'utf-8'
-            rfiles=receivedMessage[0:].decode(encoding)
-            print(rfiles)
+            numOfValuesInStr=numOfValuesInBytes[0:].decode(encoding)
+            numOfValues=int(numOfValuesInStr)
+        #loop through values and choose the one the client want to connect to and open new socket with a peer
+            files=[]
+            for i in range(numOfValues):
+                files=self.clientSocket.recv(1024)
+                encoding = 'utf-8'
+                rfiles=receivedMessage[0:].decode(encoding)
+                files.append(rfiles)
+                print(rfiles)
+            print(files)
 
         if (rmsg=="NOT FOUND\r\n"):
             msg="BYE\r\n"
