@@ -97,6 +97,9 @@ class UploadFile(Frame):
         ip_address = gethostbyname(hostname)
         message = "<" + file_name+"," +file_type + "," + str(file_size) + "," + modificationTime + "," +str(ip_address) + "," + str(self.serverPort) + ">" 
         print(message + " lalallalallala")
+        
+        SearchBox(self.master, placeholder="Type and press enter", entry_highlightthickness=0).pack(pady=10, padx=10)
+        Results(self.master).pack(pady=10, padx=10)
 
         self.clientSocket.send(message.encode())
         
