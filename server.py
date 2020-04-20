@@ -23,10 +23,10 @@ def peerThread(connectionSocket):
      message2 = connectionSocket.recv(1024)
      encoding = 'utf-8'
      msg2=message2[0:].decode(encoding)
-     print(msg2)
+     #print(msg2)
      filename = msg2.split(",")
      filename = filename[0].split('<')[1]
-     print(filename)
+     #print(filename)
      if filename not in files:
          files[filename] = [msg2]
      else:
@@ -37,17 +37,21 @@ def peerThread(connectionSocket):
      message = connectionSocket.recv(1024)
      encoding = 'utf-8'
      message=message[0:].decode(encoding)
+     print(message)
      if "SEARCH:" in message:
-         filename = message.split("SEARCH:")[1]
+         filename = message.split("SEARCH: ")[1]
+         print("filename: to search for:" + filename)
          if filename:
              if filename in files:
                 response=b"FOUND\r\n"
                 connectionSocket.send(response)
-                number = files[filename].length
+                number = len(files[filename])
                 number = str(number)
-                connectionSocket.send(number)
+                connectionSocket.send(number.encode())
+                
                 for i in files[filename]:
                     response = i.encode()
+                    print(i)
                     connectionSocket.send(response)
              else:
                 response=b"NOT FOUND\r\n"

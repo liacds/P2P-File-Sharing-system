@@ -76,6 +76,7 @@ class SearchBox(Frame):
         if (rmsg=="NOT FOUND\r\n"):
             msg="BYE\r\n"
             self.clientSocket.send(msg.encode())
+            
 
 
 
