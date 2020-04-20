@@ -42,7 +42,6 @@ files = {}
 
 serverSocket = socket(AF_INET, SOCK_STREAM)
 serverSocket.bind(('',serverPort))
-# serverSocket.connect((serverHostname,serverPort))
 serverSocket.listen(1)
 print ('The server is ready to receive:')
 
