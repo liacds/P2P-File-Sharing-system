@@ -31,19 +31,14 @@ while True:
     msg2=message2[0:].decode(encoding)
 
     print(msg2)
-<<<<<<< HEAD
     filename = msg2.split(",")
     filename = filename[0].split('<')[1]
     print(filename)
     
+    files[filename] = msg2
     #files[filename] = msg2
     #print(files)
     # filename = msg2.split(",")
     # print(filename)
-=======
-
-    filename = msg2.split(",")[0]
-    print(filename)
->>>>>>> refs/remotes/origin/master
     
 
