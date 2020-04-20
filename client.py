@@ -4,6 +4,37 @@ from gui import SearchBox
 from gui import UploadFile
 from gui import Results
 
+def open_gui(clientSocket):
+    try:
+        from Tkinter import Tk
+        from tkMessageBox import showinfo
+    except ImportError:
+            from tkinter import Tk
+            from tkinter.messagebox import showinfo
+
+    root = Tk()
+
+    root.geometry("600x600")
+    root.title("File sharing")
+    upload = UploadFile(root)
+    upload.pack(pady=10, padx=10)
+
+    SearchBox(root, placeholder="Type and press enter", entry_highlightthickness=0).pack(pady=10, padx=10)
+    Results(root).pack(pady=10, padx=10)
+    file_info = upload.browse()
+    # вот здесь короче будет 
+    #  message = "<" + file_info + ">"
+    # clientSocket.send(message)
+
+    message ="<"+file_info[0] + "," + file_info[1] +"," + str(file_info[2]) + "," + file_info[3] + ">"
+    
+    print("this is my file_info ")
+    print(message)
+    print("\n")
+    clientSocket.send(message.encode())
+    root.mainloop()
+
+
 serverName='localhost'
 serverPort = 9998
 # ip=199.11.11.11
@@ -19,42 +50,11 @@ print(rmsg)
 print("\nStarting the share of files...\n ")
 
 if (rmsg == "HI\r\n"):
-    gui(clientSocket)
+    open_gui(clientSocket)
 else:
     close(clientSocket)
 
-def gui():
-    try:
-        from Tkinter import Tk
-        from tkMessageBox import showinfo
-    except ImportError:
-            from tkinter import Tk
-            from tkinter.messagebox import showinfo
 
-    root = Tk()
 
-    root.geometry("600x600")
-    root.title("File sharing")
-    upload = UploadFile(root)
-    upload.pack(pady=10, padx=10)
-    file_info = upload.browse()
-    # вот здесь короче будет 
-    #  message = "<" + file_info + ">"
-    # clientSocket.send(message)
 
-    message=[]
-    message+="<"
-    for i in range(len(file_info)):
-        message+=i
-        message+=","
-    message[len(message)-1]=">"
-    print("this is my file_info ")
-    print(message)
-    print("\n")
-    clientSocket.send(message.encode())
-
-    SearchBox(root, placeholder="Type and press enter", entry_highlightthickness=0).pack(pady=10, padx=10)
-    Results(root).pack(pady=10, padx=10)
-    
-    root.mainloop()
 
