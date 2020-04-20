@@ -32,7 +32,7 @@ def open_gui(clientSocket):
     print(ip_address)
     message ="<"+file_info[0] + "," + file_info[1] +"," + str(file_info[2]) + "," + file_info[3] + "," +str(ip_address) +","+ str(serverPort)+ ">"
 
-    #print(message)
+    print(message)
     print("\n")
     clientSocket.send(message.encode())
     root.mainloop()

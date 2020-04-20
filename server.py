@@ -20,15 +20,18 @@ while True:
     if (msg=="HELLO\r\n"):
         response=b"HI\r\n"
         connectionSocket.send(response)
-        #connectionSocket.shutdown(0)
+
         print("What files would you like to share?\n")
     else:
          connectionSocket.close()
          break
 
     message2 = connectionSocket.recv(1024)
-    msg2=message2[0:].decode('ASCII')
+    encoding = 'utf-8'
+    msg2=message2[0:].decode(encoding)
+
     print(msg2)
+<<<<<<< HEAD
     filename = msg2.split(",")
     filename = filename[0].split('<')[1]
     print(filename)
@@ -37,5 +40,10 @@ while True:
     #print(files)
     # filename = msg2.split(",")
     # print(filename)
+=======
+
+    filename = msg2.split(",")[0]
+    print(filename)
+>>>>>>> refs/remotes/origin/master
     
 
