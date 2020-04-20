@@ -19,11 +19,9 @@ print(rmsg)
 print("\nStarting the share of files...\n ")
 
 if (rmsg == "HI\r\n"):
-    message = "%s",UploadFile.toClient()
-    print(message)
-    messageb = b"%s",UploadFile.toClient()
-    clientSocket.send(messageb)
-    #giu(socket)
+    gui(clientSocket)
+else:
+    close(clientSocket)
 
 def gui():
     try:
@@ -43,6 +41,18 @@ def gui():
     # вот здесь короче будет 
     #  message = "<" + file_info + ">"
     # clientSocket.send(message)
+
+    message=[]
+    message+="<"
+    for i in range(len(file_info)):
+        message+=i
+        message+=","
+    message[len(message)-1]=">"
+    print("this is my file_info ")
+    print(message)
+    print("\n")
+    clientSocket.send(message.encode())
+
     SearchBox(root, placeholder="Type and press enter", entry_highlightthickness=0).pack(pady=10, padx=10)
     Results(root).pack(pady=10, padx=10)
     
