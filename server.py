@@ -33,6 +33,8 @@ def peerThread(connectionSocket):
     
         files[filename] = msg2
 
+
+
      connectionSocket.close()
 
 
