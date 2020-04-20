@@ -1,6 +1,6 @@
 # made by Aliya Almas and Akzhan Suranshy
 from socket import *
-serverPort = 9999
+serverPort = 9998
 files = {}
 # ip=198.11.11.11
 serverSocket = socket(AF_INET, SOCK_STREAM)
@@ -23,6 +23,7 @@ while True:
 
         print("What files would you like to share?\n")
     else:
+         print("или здеся")
          connectionSocket.close()
          break
 
