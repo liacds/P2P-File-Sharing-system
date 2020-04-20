@@ -14,8 +14,10 @@ import datetime
 
 
 class SearchBox(Frame):
+
     def __init__(self, master, entry_font=None, entry_background="white", entry_highlightthickness=1, button_ipadx=40, button_background="grey", button_foreground="white", button_font=None, opacity=0.8, placeholder=None, placeholder_font=None, placeholder_color="grey", spacing=3):
         Frame.__init__(self, master)
+
 
         
         #browse button
@@ -52,6 +54,8 @@ class SearchBox(Frame):
 
     def _on_execute_command(self, event):
         print(self.get_text())
+
+
 
 
 

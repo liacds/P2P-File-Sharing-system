@@ -1,5 +1,7 @@
 # made by Aliya Almas and Akzhan Suranshy
 from socket import *
+from gui import SearchBox
+from gui import UploadFile
 serverName='localhost'
 serverPort = 9998
 # ip=199.11.11.11
@@ -10,11 +12,13 @@ clientSocket.send(message)
 
 receivedMessage = clientSocket.recv(1024)
 encoding = 'utf-8'
-lastchar3=receivedMessage[0:].decode('ASCII')
-print(lastchar3)
+rmsg=receivedMessage[0:].decode('ASCII')
+print(rmsg)
+print("\nStarting the share of files...\n ")
 
-if (receivedMessage == "HI\r\n"):
-    message = "SEARCH + %s",gui.get_text()
+if (rmsg == "HI\r\n"):
+    message = "%s",UploadFile.toClient()
     printf(message)
-    clientSocket.send(message)
+    messageb = b"%s",UploadFile.toClient()
+    clientSocket.send(messageb)
 

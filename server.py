@@ -10,24 +10,24 @@ print ('The server is ready to receive:')
 while True:
     connectionSocket, addr = serverSocket.accept()
     message = connectionSocket.recv(1024)
-    
-    #    print (message,'::',message.split()[0],':',message.split()[1])
-#    filename = message.split()[1]
-#    print (filename,'||',filename[1:])
-#    encoding = 'utf-8'
-#    lastchar3=filename[-3:].decode('ASCII')
-#    lastchar4=filename[-4:].decode('ASCII')
 
-    if (message=="HELLO\r\n"):
-        response="HI"
-        connectionSocket.send(response)
-
-
-    filename = message.split()[0]
-    print (filename,'||',filename[1:])
     encoding = 'utf-8'
-    lastchar3=filename[0:].decode('ASCII')
-    print(lastchar3)
+    msg=message[0:].decode('ASCII')
+    print(msg)
+
+    if (msg=="HELLO\r\n"):
+        response=b"HI\r\n"
+        connectionSocket.send(response)
+        connectionSocket.shutdown(0)
+        print("What files would you like to share?\n")
+    else:
+         connectionSocket.close()
+         break
+
+    message2 = connectionSocket.recv(1024)
+    msg2=message2[0:].decode('ASCII')
+    filename = msg2.split()[0]
+    print(filename)
 
 
 #     try:
