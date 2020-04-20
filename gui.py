@@ -8,8 +8,7 @@ except ImportError:
     
 import os 
 import datetime
- 
-
+from socket import *
 
 
 class SearchBox(Frame):
@@ -45,7 +44,7 @@ class SearchBox(Frame):
         
 
     def _on_execute_command(self, event):
-        print()
+        print("nothing yet")
         #print(self.get_text())
 
 
@@ -74,12 +73,14 @@ class Results(Frame):
 
         
 class UploadFile(Frame):
-    def __init__(self, master):
+    def __init__(self, master, clientSocket, serverPort):
         Frame.__init__(self, master)
         self.label = Label(self, text = "Browse Files (up to 5)")
         self.label.pack(side= LEFT,fill=BOTH, ipady=1, padx=(0,3))
         self.browse_button = Button(self, text="Browse a file", command=self.browse)
         self.browse_button.pack(fill=BOTH)
+        self.clientSocket = clientSocket
+        self.serverPort = serverPort
 
     def browse(self):
 
@@ -91,8 +92,14 @@ class UploadFile(Frame):
         file_size = os.path.getsize(path)
         all_file = path.split("/")
         file_name = all_file[-1]
-        file_type = file_name.split(".")[-1]    
-        return [file_name, file_type, file_size, modificationTime]
+        file_type = file_name.split(".")[-1] 
+        hostname = gethostname()
+        ip_address = gethostbyname(hostname)
+        message = "<" + file_name+"," +file_type + "," + str(file_size) + "," + modificationTime + "," +str(ip_address) + "," + str(self.serverPort) + ">" 
+        print(message + " lalallalallala")
+
+        self.clientSocket.send(message.encode())
+        
 
     
 

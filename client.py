@@ -17,13 +17,12 @@ def open_gui(clientSocket):
     SearchBox(root, placeholder="Type and press enter", entry_highlightthickness=0).pack(pady=10, padx=10)
     root.geometry("600x600")
     root.title("File sharing")
-    upload= UploadFile(root)
+    upload = UploadFile(root, clientSocket, serverPort)
     upload.pack(pady=10, padx=10)
 
     
     Results(root).pack(pady=10, padx=10)
-    file_info = upload.browse()
-
+    #file_info = upload.browse()
     # вот здесь короче будет 
     #  message = "<" + file_info + ">"
     # clientSocket.send(message)
@@ -31,16 +30,16 @@ def open_gui(clientSocket):
     hostname = gethostname()
     ip_address = gethostbyname(hostname)
     print(ip_address)
-    message ="<"+file_info[0] + "," + file_info[1] +"," + str(file_info[2]) + "," + file_info[3] + "," +str(ip_address) +","+ str(serverPort)+ ">"
+    #message ="<"+file_info[0] + "," + file_info[1] +"," + str(file_info[2]) + "," + file_info[3] + "," +str(ip_address) +","+ str(serverPort)+ ">"
 
-    print(message)
-
-    clientSocket.send(message.encode())
+    #print(message)
+    #print("\n")
+    #clientSocket.send(message.encode())
     root.mainloop()
 
 
 serverName='localhost'
-serverPort = 9999
+serverPort = 9998
 # ip=199.11.11.11
 clientSocket = socket(AF_INET, SOCK_STREAM)
 clientSocket.connect((serverName,serverPort))
@@ -56,6 +55,7 @@ print("\nStarting the share of files...\n ")
 if (rmsg == "HI\r\n"):
     open_gui(clientSocket)
 else:
+    print("здеся")
     close(clientSocket)
 
 
