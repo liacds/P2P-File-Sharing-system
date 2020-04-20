@@ -18,7 +18,7 @@ while True:
     if (msg=="HELLO\r\n"):
         response=b"HI\r\n"
         connectionSocket.send(response)
-        connectionSocket.shutdown(0)
+        #connectionSocket.shutdown(0)
         print("What files would you like to share?\n")
     else:
          connectionSocket.close()
@@ -26,8 +26,9 @@ while True:
 
     message2 = connectionSocket.recv(1024)
     msg2=message2[0:].decode('ASCII')
-    filename = msg2.split()[0]
-    print(filename)
+    print(msg2)
+    # filename = msg2.split(",")
+    # print(filename)
     
 
 #     try:
