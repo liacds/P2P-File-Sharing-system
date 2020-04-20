@@ -8,8 +8,7 @@ except ImportError:
     
 import os 
 import datetime
-
-from client import
+ 
 
 
 
