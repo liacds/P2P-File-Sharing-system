@@ -51,6 +51,22 @@ class SearchBox(Frame):
         print(message)
         self.clientSocket.send(message.encode())
 
+        #wait for found or not found
+        receivedMessage =self.clientSocket.recv(1024)
+        encoding = 'utf-8'
+        rmsg=receivedMessage[0:].decode(encoding)
+        print(rmsg)
+
+        if (rmsg=="FOUND\r\n"):
+            files=self.clientSocket.recv(1024)
+            encoding = 'utf-8'
+            rfiles=receivedMessage[0:].decode(encoding)
+            print(rfiles)
+
+        if (rmsg=="NOT FOUND\r\n"):
+            msg="BYE\r\n"
+            self.clientSocket.send(msg.encode())
+
 
 
 
