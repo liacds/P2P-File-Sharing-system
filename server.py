@@ -21,6 +21,9 @@ def peerThread(connectionSocket):
 
      for i in range(5):
         message2 = connectionSocket.recv(1024)
+        if not message2:
+            print("User not uploaded file")
+            break
         encoding = 'utf-8'
         msg2=message2[0:].decode(encoding)
         print(msg2)
@@ -35,7 +38,7 @@ def peerThread(connectionSocket):
 
 
 
-serverPort = 9998
+serverPort = 9999
 serverHostname = 'localhost'
 
 files = {}
