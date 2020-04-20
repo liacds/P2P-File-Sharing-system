@@ -16,7 +16,7 @@ class SearchBox(Frame):
     def __init__(self, master, clientSocket, serverPort, entry_font=None, entry_background="white", entry_highlightthickness=1, button_ipadx=40, button_background="grey", button_foreground="white", button_font=None, opacity=0.8, placeholder=None, placeholder_font=None, placeholder_color="grey", spacing=3):
         Frame.__init__(self, master)
 
-
+        self.clientSocket = clientSocket
         self.label = Label(self, text = "File Name")
         self.label.pack(side= LEFT,fill=BOTH, ipady=1, padx=(0,spacing))
         self.entry = Entry(self, width=50, background=entry_background, highlightcolor=button_background, highlightthickness=entry_highlightthickness)
