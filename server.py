@@ -19,8 +19,7 @@ def peerThread(connectionSocket):
         connectionSocket.close()
 
 
-    for i in range (5):
-
+     for i in range(5):
         message2 = connectionSocket.recv(1024)
         encoding = 'utf-8'
         msg2=message2[0:].decode(encoding)
@@ -37,14 +36,13 @@ def peerThread(connectionSocket):
 
 
 serverPort = 9998
-serverHostname = gethostname()
-serverIp = gethostbyname(serverHostname)
+serverHostname = 'localhost'
 
-# files = {}
+files = {}
 
 serverSocket = socket(AF_INET, SOCK_STREAM)
 serverSocket.bind(('',serverPort))
-# serverSocket.connect((serverIp,serverPort))
+# serverSocket.connect((serverHostname,serverPort))
 serverSocket.listen(1)
 print ('The server is ready to receive:')
 
