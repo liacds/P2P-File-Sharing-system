@@ -1,15 +1,20 @@
 # made by Aliya Almas and Akzhan Suranshy
 from socket import *
-serverName="servername"
-serverPort = 9999
-ip=199.11.11.11
+serverName='localhost'
+serverPort = 9998
+# ip=199.11.11.11
 clientSocket = socket(AF_INET, SOCK_STREAM)
 clientSocket.connect((serverName,serverPort))
-message = "HELLO\r\n"
+message = b"HELLO\r\n"
 clientSocket.send(message)
 
 receivedMessage = clientSocket.recv(1024)
-if (receivedMessage == "HI\r\n"){
-    message = ""
+encoding = 'utf-8'
+lastchar3=receivedMessage[0:].decode('ASCII')
+print(lastchar3)
+
+if (receivedMessage == "HI\r\n"):
+    message = "SEARCH + %s",gui.get_text()
+    printf(message)
     clientSocket.send(message)
-}
+

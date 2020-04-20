@@ -19,7 +19,7 @@ class SearchBox(Frame):
         self.label = Label(self, text = "Browse Files (up to 5)")
         self.label.pack(side= LEFT,fill=BOTH, ipady=1, padx=(0,spacing))
         #browse button
-        self.browse_button = Button(self, text="Browse a file",command=self.browse)
+        self.browse_button = Button(self, text="Browse a file (up to 5)",command=self.browse)
         self.browse_button.pack(fill=BOTH)
         #-------------------------
         self.label = Label(self, text = "File Name")
@@ -55,6 +55,7 @@ class SearchBox(Frame):
 
     def _on_execute_command(self, event):
         print(self.get_text())
+
 
 
 
