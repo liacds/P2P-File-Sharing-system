@@ -21,7 +21,7 @@ class SearchBox(Frame):
         self.label.pack(side= LEFT,fill=BOTH, ipady=1, padx=(0,spacing))
         self.entry = Entry(self, width=50, background=entry_background, highlightcolor=button_background, highlightthickness=entry_highlightthickness)
         self.entry.pack(side=LEFT, fill=BOTH, ipady=1, padx=(0,spacing))
-
+        self.serverPort = serverPort
         self._button_background = button_background
         self.button_label = Label(self, text="Search", background=button_background, foreground=button_foreground, font=button_font)
         if entry_font:
@@ -73,10 +73,11 @@ class SearchBox(Frame):
                 print(rfiles)
             print(files)
 
+            Results(self.master, self.clientSocket, self.serverPort, files).pack(pady=10, padx=10)
         if (rmsg=="NOT FOUND\r\n"):
             msg="BYE\r\n"
             self.clientSocket.send(msg.encode())
-            
+
 
 
 
@@ -84,10 +85,9 @@ class SearchBox(Frame):
 
 class Results(Frame):
 
-     def __init__(self, master, clientSocket, serverPort):
+     def __init__(self, master, clientSocket, serverPort, files):
         Frame.__init__(self, master)
-        DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", 
-        "Friday", "Saturday", "Sunday"] 
+        DAYS = files 
         
         self.list = Listbox(self, width = 50, background = "white")  
         self.list.insert(0, *DAYS) 
@@ -122,7 +122,7 @@ class UploadFile(Frame):
         modificationTime = datetime.datetime.fromtimestamp(modTimesinceEpoc).strftime('%Y-%m-%d')
         file_size = os.path.getsize(path)
         all_file = path.split("/")
-        file_name = all_file[-1]
+        file_name = all_file[-1].split(".")[0]
         file_type = file_name.split(".")[-1] 
         hostname = gethostname()
         ip_address = gethostbyname(hostname)
@@ -130,7 +130,7 @@ class UploadFile(Frame):
         print(message + " lalallalallala")
         
         SearchBox(self.master, self.clientSocket, self.serverPort, placeholder="Type and press enter", entry_highlightthickness=0).pack(pady=10, padx=10)
-        Results(self.master,self.clientSocket, self.serverPort).pack(pady=10, padx=10)
+        
 
         self.clientSocket.send(message.encode())
         
