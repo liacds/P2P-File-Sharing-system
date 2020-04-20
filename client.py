@@ -17,12 +17,13 @@ def open_gui(clientSocket):
     SearchBox(root, placeholder="Type and press enter", entry_highlightthickness=0).pack(pady=10, padx=10)
     root.geometry("600x600")
     root.title("File sharing")
-    upload = UploadFile(root)
+    upload= UploadFile(root)
     upload.pack(pady=10, padx=10)
 
     
     Results(root).pack(pady=10, padx=10)
     file_info = upload.browse()
+
     # вот здесь короче будет 
     #  message = "<" + file_info + ">"
     # clientSocket.send(message)
@@ -33,7 +34,7 @@ def open_gui(clientSocket):
     message ="<"+file_info[0] + "," + file_info[1] +"," + str(file_info[2]) + "," + file_info[3] + "," +str(ip_address) +","+ str(serverPort)+ ">"
 
     print(message)
-    print("\n")
+
     clientSocket.send(message.encode())
     root.mainloop()
 

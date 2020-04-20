@@ -30,8 +30,8 @@ while True:
 
     print(msg2)
 
-    filename = msg2.split(",")[0]
-    print(filename)
+#     filename = msg2.split(",")[0]
+#     print(filename)
     
 
 #     try:
