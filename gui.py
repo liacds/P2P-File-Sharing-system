@@ -62,11 +62,11 @@ class SearchBox(Frame):
             numOfValuesInBytes=self.clientSocket.recv(1024)
             encoding = 'utf-8'
             numOfValuesInStr=numOfValuesInBytes[0:].decode(encoding)
-            numOfValues=int(numOfValuesInStr)
+            numOfValues=int(numOfValuesInStr.split("<")[0])
         #loop through values and choose the one the client want to connect to and open new socket with a peer
             files=[]
             for i in range(numOfValues):
-                files=self.clientSocket.recv(1024)
+                receivedMessage=self.clientSocket.recv(1024)
                 encoding = 'utf-8'
                 rfiles=receivedMessage[0:].decode(encoding)
                 files.append(rfiles)
