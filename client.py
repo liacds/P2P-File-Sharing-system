@@ -35,6 +35,7 @@ def open_gui(clientSocket):
     #print(message)
     #print("\n")
     #clientSocket.send(message.encode())
+
     root.mainloop()
 
 
