@@ -14,24 +14,27 @@ def open_gui(clientSocket):
 
     root = Tk()
 
+    SearchBox(root, placeholder="Type and press enter", entry_highlightthickness=0).pack(pady=10, padx=10)
     root.geometry("600x600")
     root.title("File sharing")
     upload = UploadFile(root)
     upload.pack(pady=10, padx=10)
 
-    SearchBox(root, placeholder="Type and press enter", entry_highlightthickness=0).pack(pady=10, padx=10)
+    
     Results(root).pack(pady=10, padx=10)
     file_info = upload.browse()
     # вот здесь короче будет 
     #  message = "<" + file_info + ">"
     # clientSocket.send(message)
 
-    message ="<"+file_info[0] + "," + file_info[1] +"," + str(file_info[2]) + "," + file_info[3] + ">"
-    
-    print("this is my file_info ")
-    print(message)
+    hostname = gethostname()
+    ip_address = gethostbyname(hostname)
+    print(ip_address)
+    message ="<"+file_info[0] + "," + file_info[1] +"," + str(file_info[2]) + "," + file_info[3] + "," +str(ip_address) +","+ str(serverPort)+ ">"
 
-    clientSocket.send(message.encode('utf-8'))
+    #print(message)
+    print("\n")
+    clientSocket.send(message.encode())
     root.mainloop()
 
 
