@@ -98,8 +98,8 @@ class UploadFile(Frame):
         file_name = all_file[-1]
         file_type = file_name.split(".")[-1]
         print(modificationTime)
-        print(size)
-        print(filename)
+        print(file_size)
+        print(file_name)
         print(file_type)
         return [file_name, file_type, file_size, modificationTime]
 
