@@ -28,7 +28,7 @@ while True:
     msg2=message2[0:].decode('ASCII')
     filename = msg2.split()[0]
     print(filename)
-
+    
 
 #     try:
 #         f=open(filename[1:], "r+b")
