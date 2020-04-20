@@ -30,8 +30,8 @@ def open_gui(clientSocket):
     
     print("this is my file_info ")
     print(message)
-    print("\n")
-    clientSocket.send(message.encode())
+
+    clientSocket.send(message.encode('utf-8'))
     root.mainloop()
 
 
