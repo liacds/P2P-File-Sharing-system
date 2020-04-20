@@ -40,7 +40,7 @@ def open_gui(clientSocket):
 
 
 serverName='localhost'
-serverPort = 9998
+serverPort = 9999
 # ip=199.11.11.11
 clientSocket = socket(AF_INET, SOCK_STREAM)
 clientSocket.connect((serverName,serverPort))
