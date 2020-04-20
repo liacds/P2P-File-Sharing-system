@@ -13,7 +13,7 @@ from socket import *
 
 class SearchBox(Frame):
 
-    def __init__(self, master, entry_font=None, entry_background="white", entry_highlightthickness=1, button_ipadx=40, button_background="grey", button_foreground="white", button_font=None, opacity=0.8, placeholder=None, placeholder_font=None, placeholder_color="grey", spacing=3):
+    def __init__(self, master, clientSocket, serverPort, entry_font=None, entry_background="white", entry_highlightthickness=1, button_ipadx=40, button_background="grey", button_foreground="white", button_font=None, opacity=0.8, placeholder=None, placeholder_font=None, placeholder_color="grey", spacing=3):
         Frame.__init__(self, master)
 
 
@@ -41,11 +41,15 @@ class SearchBox(Frame):
                 return entry.get()
         else:
             return entry.get()
+
         
 
     def _on_execute_command(self, event):
         print("nothing yet")
         #print(self.get_text())
+        message="SEARCH: "+self.get_text()
+        print(message)
+        self.clientSocket.send(message.encode())
 
 
 
@@ -53,7 +57,7 @@ class SearchBox(Frame):
 
 class Results(Frame):
 
-     def __init__(self, master):
+     def __init__(self, master, clientSocket, serverPort):
         Frame.__init__(self, master)
         DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", 
         "Friday", "Saturday", "Sunday"] 
@@ -98,8 +102,8 @@ class UploadFile(Frame):
         message = "<" + file_name+"," +file_type + "," + str(file_size) + "," + modificationTime + "," +str(ip_address) + "," + str(self.serverPort) + ">" 
         print(message + " lalallalallala")
         
-        SearchBox(self.master, placeholder="Type and press enter", entry_highlightthickness=0).pack(pady=10, padx=10)
-        Results(self.master).pack(pady=10, padx=10)
+        SearchBox(self.master, self.clientSocket, self.serverPort, placeholder="Type and press enter", entry_highlightthickness=0).pack(pady=10, padx=10)
+        Results(self.master,self.clientSocket, self.serverPort).pack(pady=10, padx=10)
 
         self.clientSocket.send(message.encode())
         
