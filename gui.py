@@ -106,6 +106,7 @@ class Results(Frame):
         peerSocket = socket(AF_INET, SOCK_STREAM)
 
         fileValues=""
+
         for i in selection:
             fileValues+=self.list.get(i)
         print(fileValues)
@@ -116,9 +117,9 @@ class Results(Frame):
         fileType=fileValues.split(",")[1]
         fileSize=fileValues.split(",")[2]
         peerTempServerPort=fileValues.split("," )[-1]
-        peerServerPort=fileValues.split(">")[-2]
-
-        peerSocket.connect((ip,self.peerServerPort))
+        peerServerPort=peerTempServerPort.split(">")[0]
+        print(peerServerPort)
+        peerSocket.connect((ip,peerServerPort))
         message="DOWNLOAD: "+fileName+","+fileType+","+fileSize
         peerSocket.send(message.encode())
 
