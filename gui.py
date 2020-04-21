@@ -100,7 +100,16 @@ class Results(Frame):
         self.print_btn.pack(fill=BOTH)   
 
      def print_selection(self): 
-        selection = self.list.curselection() 
+        selection = self.list.curselection()
+        peerSocket = socket(AF_INET, SOCK_STREAM)
+        ip=selection.split(",")[-2]
+        temp=selection.split(",")[0]
+        fileName=temp.split("<")[1]
+        fileType=selection.split(",")[1]
+        fileSize=selection.split(",")[2]
+        peerSocket.connect((ip,self.serverPort))
+        message="DOWNLOAD: "+fileName+","+fileType+","+fileSize
+        peerSocket.send(message.encode())
         #print([self.list.get(i) for i in selection]) 
 
         
