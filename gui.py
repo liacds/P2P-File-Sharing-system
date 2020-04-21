@@ -110,7 +110,20 @@ class Results(Frame):
         peerSocket.connect((ip,self.serverPort))
         message="DOWNLOAD: "+fileName+","+fileType+","+fileSize
         peerSocket.send(message.encode())
-        #print([self.list.get(i) for i in selection]) 
+        #print([self.list.get(i) for i in selection])
+
+        with open('received_file', 'wb') as f:
+            print 'file opened'
+            while True:
+                print('receiving data...')
+                data = peerSocket.recv(1024)
+                if not data:
+                    f.close()
+                    print 'file close()'
+                    break
+                print('data=%s', (data))
+                # write data to a file
+                f.write(data)
 
         
 class UploadFile(Frame):
