@@ -77,6 +77,7 @@ class SearchBox(Frame):
         if (rmsg=="NOT FOUND\r\n"):
             msg="BYE\r\n"
             self.clientSocket.send(msg.encode())
+            Label(self, text = "No Files found").pack()
 
 
 
@@ -122,10 +123,11 @@ class UploadFile(Frame):
         modificationTime = datetime.datetime.fromtimestamp(modTimesinceEpoc).strftime('%Y-%m-%d')
         file_size = os.path.getsize(path)
         all_file = path.split("/")
-        file_name = all_file[-1].split(".")[0]
+        file_name = all_file[-1]
         file_type = file_name.split(".")[-1] 
         hostname = gethostname()
         ip_address = gethostbyname(hostname)
+        file_name= file_name.split(".")[0]
         message = "<" + file_name+"," +file_type + "," + str(file_size) + "," + modificationTime + "," +str(ip_address) + "," + str(self.serverPort) + ">" 
         print(message + " lalallalallala")
         
