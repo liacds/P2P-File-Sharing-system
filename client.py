@@ -65,20 +65,21 @@ else:
 serverSocket = socket(AF_INET, SOCK_STREAM)
 serverSocket.bind(('',serverPort))
 serverSocket.listen(1)
-connectionSocket1, addr = serverSocket.accept()
-receivedMessage = connectionSocket1.recv(1024)
-encoding = 'utf-8'
-message = receivedMessage[0:].decode(encoding)
-if("DOWNLOAD" in message):
-    message = message.split("DOWNLOAD:")[1]
-    filename = message.split(",")[0]
-    f = open(filename,'rb')
-    l = f.read(1024)
-    while (l):
-        clientSocket.send(l)
-        print('Sent ',repr(l))
+while True:
+    connectionSocket1, addr = serverSocket.accept()
+    receivedMessage = connectionSocket1.recv(1024)
+    encoding = 'utf-8'
+    message = receivedMessage[0:].decode(encoding)
+    if("DOWNLOAD" in message):
+        message = message.split("DOWNLOAD:")[1]
+        filename = message.split(",")[0]
+        f = open(filename,'rb')
         l = f.read(1024)
-        f.close()
+        while (l):
+            clientSocket.send(l)
+            print('Sent ',repr(l))
+            l = f.read(1024)
+            f.close()
 
 
 
