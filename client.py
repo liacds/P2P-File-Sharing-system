@@ -62,7 +62,10 @@ else:
 
 
 #ДАУНЛОУД 
-connectionSocket1, addr = clientSocket.accept()
+serverSocket = socket(AF_INET, SOCK_STREAM)
+serverSocket.bind(('',serverPort))
+serverSocket.listen(1)
+connectionSocket1, addr = serverSocket.accept()
 receivedMessage = connectionSocket1.recv(1024)
 encoding = 'utf-8'
 message = receivedMessage[0:].decode(encoding)
