@@ -118,8 +118,7 @@ class Results(Frame):
         fileSize=fileValues.split(",")[2]
         peerTempServerPort=fileValues.split("," )[-1]
         peerServerPort=peerTempServerPort.split(">")[0]
-        print(peerServerPort)
-        peerSocket.connect((ip,peerServerPort))
+        peerSocket.connect((ip,int(peerServerPort)))
         message="DOWNLOAD: "+fileName+","+fileType+","+fileSize
         peerSocket.send(message.encode())
 
