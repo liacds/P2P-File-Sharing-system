@@ -26,7 +26,7 @@ def peerThread(connectionSocket):
      #print(msg2)
      filename = msg2.split(",")
      filename = filename[0].split('<')[1]
-     filename= filename.split(".")
+     filename= filename.split(".")[0]
      #print(filename)
      if filename not in files:
          files[filename] = [msg2]
@@ -73,7 +73,7 @@ def peerThread(connectionSocket):
 
 
 
-serverPort = 9998
+serverPort = 9999
 serverHostname = 'localhost'
 
 files = {}

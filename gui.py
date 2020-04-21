@@ -89,7 +89,9 @@ class Results(Frame):
      def __init__(self, master, clientSocket, serverPort, files):
         Frame.__init__(self, master)
         DAYS = files 
-        
+
+        self.clientSocket = clientSocket
+        self.serverPort = serverPort
         self.list = Listbox(self, width = 50, background = "white")  
         self.list.insert(0, *DAYS) 
         self.print_btn = Button(self, text="Download", 
@@ -102,24 +104,32 @@ class Results(Frame):
      def print_selection(self): 
         selection = self.list.curselection()
         peerSocket = socket(AF_INET, SOCK_STREAM)
-        ip=selection.split(",")[-2]
-        temp=selection.split(",")[0]
-        fileName=temp.split("<")[1]
-        fileType=selection.split(",")[1]
-        fileSize=selection.split(",")[2]
+
+        fileValues=""
+        for i in selection:
+            fileValues+=self.list.get(i)
+        print(fileValues)
+
+        ip=fileValues.split(",")[-2]
+        temp=fileValues.split(",")[0]
+        fileName=fileValues.split("<")[1]
+        fileType=fileValues.split(",")[1]
+        fileSize=fileValues.split(",")[2]
+
         peerSocket.connect((ip,self.serverPort))
         message="DOWNLOAD: "+fileName+","+fileType+","+fileSize
         peerSocket.send(message.encode())
-        #print([self.list.get(i) for i in selection])
+
+#         print([self.list.get(i) for i in selection])
 
         with open('received_file', 'wb') as f:
-            print 'file opened'
+            print ('file opened')
             while True:
                 print('receiving data...')
                 data = peerSocket.recv(1024)
                 if not data:
                     f.close()
-                    print 'file close()'
+                    print ('file close')
                     break
                 print('data=%s', (data))
                 # write data to a file
