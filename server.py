@@ -2,7 +2,8 @@
 from _thread import *
 from socket import *
 
-def peerThread(connectionSocket):
+def peerThread(connectionSocket,clientPort):
+     print(clientPort)
      message = connectionSocket.recv(1024)
 
      encoding = 'utf-8'
@@ -73,7 +74,7 @@ def peerThread(connectionSocket):
 
 
 
-serverPort = 9999
+serverPort = 9998
 serverHostname = 'localhost'
 
 files = {}
@@ -86,6 +87,6 @@ print ('The server is ready to receive:')
 
 while True:
     connectionSocket1, addr = serverSocket.accept()
-    start_new_thread(peerThread ,(connectionSocket1,))
+    start_new_thread(peerThread ,(connectionSocket1,addr))
 serverSocket.close()
 

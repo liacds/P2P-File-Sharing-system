@@ -73,7 +73,7 @@ class SearchBox(Frame):
                 print(rfiles)
             print(files)
 
-            Results(self.master, self.clientSocket, self.serverPort, files).pack(pady=10, padx=10)
+        Results(self.master, self.clientSocket, self.serverPort, files).pack(pady=10, padx=10)
         if (rmsg=="NOT FOUND\r\n"):
             msg="BYE\r\n"
             self.clientSocket.send(msg.encode())
