@@ -45,7 +45,7 @@ class SearchBox(Frame):
         
 
     def _on_execute_command(self, event):
-        print("nothing yet")
+        #print("nothing yet")
         #print(self.get_text())
         message="SEARCH: "+self.get_text()
         print(message)
@@ -55,25 +55,29 @@ class SearchBox(Frame):
         receivedMessage =self.clientSocket.recv(1024)
         encoding = 'utf-8'
         rmsg=receivedMessage[0:].decode(encoding)
-        print(rmsg)
+        #print(rmsg)
 
         if (rmsg=="FOUND\r\n"):
         #how many values for same key there are
             numOfValuesInBytes=self.clientSocket.recv(1024)
             encoding = 'utf-8'
-            numOfValuesInStr=numOfValuesInBytes[0:].decode(encoding)
-            numOfValues=int(numOfValuesInStr.split("<")[0])
+            numOfValues=numOfValuesInBytes[0:].decode(encoding)
+            #print(numOfValues)
+
+            #print("THIS IS WHAT I GET AFTER SENDING")
+            #numOfValues=int(numOfValuesInStr.split("<")[0])
+
         #loop through values and choose the one the client want to connect to and open new socket with a peer
             files=[]
-            for i in range(numOfValues):
+            for i in range( int(numOfValues)  ):
                 receivedMessage=self.clientSocket.recv(1024)
                 encoding = 'utf-8'
                 rfiles=receivedMessage[0:].decode(encoding)
                 files.append(rfiles)
-                print(rfiles)
+                #print(rfiles)
             print(files)
 
-        Results(self.master, self.clientSocket, self.serverPort, files).pack(pady=10, padx=10)
+            Results(self.master, self.clientSocket, self.serverPort, files).pack(pady=10, padx=10)
         if (rmsg=="NOT FOUND\r\n"):
             msg="BYE\r\n"
             self.clientSocket.send(msg.encode())
@@ -163,7 +167,7 @@ class UploadFile(Frame):
         ip_address = gethostbyname(hostname)
         file_name= file_name.split(".")[0]
         message = "<" + file_name+"," +file_type + "," + str(file_size) + "," + modificationTime + "," +str(ip_address) + "," + str(self.serverPort) + ">" 
-        print(message + " lalallalallala")
+        #print(message + " lalallalallala")
         
         SearchBox(self.master, self.clientSocket, self.serverPort, placeholder="Type and press enter", entry_highlightthickness=0).pack(pady=10, padx=10)
         

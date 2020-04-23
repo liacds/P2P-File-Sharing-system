@@ -17,6 +17,9 @@ def open_gui(clientSocket):
     #SearchBox(root, placeholder="Type and press enter", entry_highlightthickness=0).pack(pady=10, padx=10)
     root.geometry("600x600")
     root.title("File sharing")
+    message = b"BROwSE\r\n"
+    clientSocket.send(message)
+    print("Browse")
     upload = UploadFile(root, clientSocket, serverPort)
     upload.pack(pady=10, padx=10)
 
@@ -29,7 +32,7 @@ def open_gui(clientSocket):
 
     hostname = gethostname()
     ip_address = gethostbyname(hostname)
-    print(ip_address)
+    #print(ip_address)
     #message ="<"+file_info[0] + "," + file_info[1] +"," + str(file_info[2]) + "," + file_info[3] + "," +str(ip_address) +","+ str(serverPort)+ ">"
 
     #print(message)
@@ -40,7 +43,7 @@ def open_gui(clientSocket):
 
 
 serverName='localhost'
-serverPort = 9998
+serverPort = 9999
 # ip=199.11.11.11
 clientSocket = socket(AF_INET, SOCK_STREAM)
 clientSocket.connect((serverName,serverPort))
@@ -50,7 +53,7 @@ clientSocket.send(message)
 receivedMessage = clientSocket.recv(1024)
 encoding = 'utf-8'
 rmsg=receivedMessage[0:].decode('ASCII')
-print(rmsg)
+#print(rmsg)
 print("\nStarting the share of files...\n ")
 
 if (rmsg == "HI\r\n"):

@@ -2,13 +2,13 @@
 from _thread import *
 from socket import *
 
-def peerThread(connectionSocket,clientPort):
-     print(clientPort)
+def peerThread(connectionSocket, addr):
+     #print(clientPort)
      message = connectionSocket.recv(1024)
 
      encoding = 'utf-8'
      msg=message[0:].decode('ASCII')
-     print(msg)
+     #print(msg)
 
      if (msg=="HELLO\r\n"):
         response=b"HI\r\n"
@@ -24,10 +24,11 @@ def peerThread(connectionSocket,clientPort):
      message2 = connectionSocket.recv(1024)
      encoding = 'utf-8'
      msg2=message2[0:].decode(encoding)
-     #print(msg2)
-     filename = msg2.split(",")
-     filename = filename[0].split('<')[1]
+     print(msg2)
+     words = msg2.split(",")
+     filename = words[0].split('<')[1]
      filename= filename.split(".")[0]
+     msg2 = "<" + filename + "," + words[1] + "," + words[2] + "," + words[3] + "," + addr[0] + "," + str(addr[1])+">"
      #print(filename)
      if filename not in files:
          files[filename] = [msg2]
@@ -39,21 +40,22 @@ def peerThread(connectionSocket,clientPort):
      message = connectionSocket.recv(1024)
      encoding = 'utf-8'
      message=message[0:].decode(encoding)
-     print(message)
+     #print(message)
      if "SEARCH:" in message:
          filename = message.split("SEARCH: ")[1]
-         print("filename: to search for:" + filename)
+         #print("filename: to search for:" + filename)
          if filename:
              if filename in files:
                 response=b"FOUND\r\n"
                 connectionSocket.send(response)
+               
                 number = len(files[filename])
                 number = str(number)
                 connectionSocket.send(number.encode())
                 
                 for i in files[filename]:
                     response = i.encode()
-                    print(i)
+                    #print(i)
                     connectionSocket.send(response)
              else:
                 response=b"NOT FOUND\r\n"
@@ -74,7 +76,7 @@ def peerThread(connectionSocket,clientPort):
 
 
 
-serverPort = 9998
+serverPort = 9999
 serverHostname = 'localhost'
 
 files = {}
