@@ -1,3 +1,4 @@
+
 try:
     from Tkinter import Entry, Frame, Label, StringVar, Listbox, Button, filedialog
     from Tkconstants import *
@@ -5,28 +6,30 @@ try:
 except ImportError:
     from tkinter import Entry, Frame, Label, StringVar, Listbox, Button, filedialog
     from tkinter.constants import *
-    
-import os 
+
+import os
 import datetime
 from socket import *
 
 
 class SearchBox(Frame):
 
-    def __init__(self, master, clientSocket, serverPort, entry_font=None, entry_background="white", entry_highlightthickness=1, button_ipadx=40, button_background="grey", button_foreground="white", button_font=None, opacity=0.8, placeholder=None, placeholder_font=None, placeholder_color="grey", spacing=3):
+    def __init__(self, master, clientSocket, serverPort,main_client_socket_port,main_client_socket_ip, entry_font=None, entry_background="white", entry_highlightthickness=1, button_ipadx=40, button_background="grey", button_foreground="white", button_font=None, opacity=0.8, placeholder=None, placeholder_font=None, placeholder_color="grey", spacing=3):
         Frame.__init__(self, master)
-        
+
         self.clientSocket = clientSocket
         self.label = Label(self, text = "File Name")
         self.label.pack(side= LEFT,fill=BOTH, ipady=1, padx=(0,spacing))
         self.entry = Entry(self, width=50, background=entry_background, highlightcolor=button_background, highlightthickness=entry_highlightthickness)
         self.entry.pack(side=LEFT, fill=BOTH, ipady=1, padx=(0,spacing))
         self.serverPort = serverPort
+        self.main_client_socket_port=main_client_socket_port
+        self.main_client_socket_ip=main_client_socket_ip
         self._button_background = button_background
         self.button_label = Label(self, text="Search", background=button_background, foreground=button_foreground, font=button_font)
         if entry_font:
             self.button_label.configure(font=button_font)
-            
+
         self.button_label.pack(side=LEFT, fill=Y, ipadx=button_ipadx)
         self.entry.bind("<Return>", self._on_execute_command)
         self.button_label.bind("<ButtonRelease-1>", self._on_execute_command)
@@ -42,7 +45,7 @@ class SearchBox(Frame):
         else:
             return entry.get()
 
-        
+
 
     def _on_execute_command(self, event):
         print("nothing yet")
@@ -63,6 +66,7 @@ class SearchBox(Frame):
             encoding = 'utf-8'
             numOfValuesInStr=numOfValuesInBytes[0:].decode(encoding)
             numOfValues=int(numOfValuesInStr.split("<")[0])
+
         #loop through values and choose the one the client want to connect to and open new socket with a peer
             files=[]
             for i in range(numOfValues):
@@ -73,7 +77,7 @@ class SearchBox(Frame):
                 print(rfiles)
             print(files)
 
-        Results(self.master, self.clientSocket, self.serverPort, files).pack(pady=10, padx=10)
+        Results(self.master, self.clientSocket, self.serverPort, self.main_client_socket_port,self.main_client_socket_ip, files).pack(pady=10, padx=10)
         if (rmsg=="NOT FOUND\r\n"):
             msg="BYE\r\n"
             self.clientSocket.send(msg.encode())
@@ -86,22 +90,24 @@ class SearchBox(Frame):
 
 class Results(Frame):
 
-     def __init__(self, master, clientSocket, serverPort, files):
+     def __init__(self, master, clientSocket, serverPort,main_client_socket_port,main_client_socket_ip, files):
         Frame.__init__(self, master)
-        DAYS = files 
+        DAYS = files
 
         self.clientSocket = clientSocket
         self.serverPort = serverPort
-        self.list = Listbox(self, width = 50, background = "white")  
-        self.list.insert(0, *DAYS) 
-        self.print_btn = Button(self, text="Download", 
-                                   command=self.print_selection) 
-        
- 
-        self.list.pack() 
-        self.print_btn.pack(fill=BOTH)   
+        self.main_client_socket_port=main_client_socket_port
+        self.main_client_socket_ip=main_client_socket_ip
+        self.list = Listbox(self, width = 50, background = "white")
+        self.list.insert(0, *DAYS)
+        self.print_btn = Button(self, text="Download",
+                                   command=self.print_selection)
 
-     def print_selection(self): 
+
+        self.list.pack()
+        self.print_btn.pack(fill=BOTH)
+
+     def print_selection(self):
         selection = self.list.curselection()
         peerSocket = socket(AF_INET, SOCK_STREAM)
 
@@ -111,18 +117,21 @@ class Results(Frame):
             fileValues+=self.list.get(i)
         print(fileValues)
 
-        ip=fileValues.split(",")[-2]
+#         ip=fileValues.split(",")[-2]
+        ip=self.main_client_socket_ip
         temp=fileValues.split(",")[0]
         fileName=fileValues.split("<")[1]
         fileType=fileValues.split(",")[1]
         fileSize=fileValues.split(",")[2]
-        peerTempServerPort=fileValues.split("," )[-1]
-        peerServerPort=peerTempServerPort.split(">")[0]
-        peerSocket.connect((ip,int(peerServerPort)))
+#         peerTempServerPort=fileValues.split("," )[-1]
+#         peerServerPort=peerTempServerPort.split(">")[0]
+        peerServerPort=self.main_client_socket_port
+        print(ip)
+        print(peerServerPort)
+
+        peerSocket.connect((ip,peerServerPort))
         message="DOWNLOAD: "+fileName+","+fileType+","+fileSize
         peerSocket.send(message.encode())
-
-#         print([self.list.get(i) for i in selection])
 
         with open('received_file', 'wb') as f:
             print ('file opened')
@@ -137,9 +146,32 @@ class Results(Frame):
                 # write data to a file
                 f.write(data)
 
-        
+#         print([self.list.get(i) for i in selection])
+#         receivedMessage =self.clientSocket.recv(1024)
+#         encoding = 'utf-8'
+#         rmsg=receivedMessage[0:].decode(encoding)
+#         print(rmsg)
+#         if ("SENDING" == rmsg):
+#             m="WAITING"
+#             peerSocket.send(m.encode())
+#             with open('received_file', 'wb') as f:
+#                 print ('file opened')
+#                 while True:
+#                     print('receiving data...')
+#                     data = peerSocket.recv(1024)
+#                     if not data:
+#                         f.close()
+#                         print ('file close')
+#                         break
+#                     print('data=%s', (data))
+#                     # write data to a file
+#                     f.write(data)
+
+
 class UploadFile(Frame):
-    def __init__(self, master, clientSocket, serverPort):
+
+    def __init__(self, master, clientSocket, serverPort, main_client_socket_port, main_client_socket_ip):
+
         Frame.__init__(self, master)
         self.label = Label(self, text = "Browse Files (up to 5)")
         self.label.pack(side= LEFT,fill=BOTH, ipady=1, padx=(0,3))
@@ -147,50 +179,30 @@ class UploadFile(Frame):
         self.browse_button.pack(fill=BOTH)
         self.clientSocket = clientSocket
         self.serverPort = serverPort
+        self.main_client_socket_port=main_client_socket_port
+        self.main_client_socket_ip=main_client_socket_ip
 
     def browse(self):
 
+
         browsedFile=filedialog.askopenfile(initialdir="/",title="select file", filetypes=(("text files", ".txt"),("all files","*.*")))
         path = browsedFile.name
-        
+
         modTimesinceEpoc = os.path.getmtime(path)
         modificationTime = datetime.datetime.fromtimestamp(modTimesinceEpoc).strftime('%Y-%m-%d')
         file_size = os.path.getsize(path)
         all_file = path.split("/")
         file_name = all_file[-1]
-        file_type = file_name.split(".")[-1] 
-        hostname = gethostname()
-        ip_address = gethostbyname(hostname)
+        file_type = file_name.split(".")[-1]
+
+        ip_address = self.main_client_socket_ip
         file_name= file_name.split(".")[0]
-        message = "<" + file_name+"," +file_type + "," + str(file_size) + "," + modificationTime + "," +str(ip_address) + "," + str(self.serverPort) + ">" 
+        message = "<" + file_name+"," +file_type + "," + str(file_size) + "," + modificationTime + "," +str(self.main_client_socket_ip) + "," + str(self.main_client_socket_port) + ">"
         print(message + " lalallalallala")
-        
-        SearchBox(self.master, self.clientSocket, self.serverPort, placeholder="Type and press enter", entry_highlightthickness=0).pack(pady=10, padx=10)
-        
+
+        SearchBox(self.master, self.clientSocket, self.serverPort,self.main_client_socket_port,self.main_client_socket_ip, placeholder="Type and press enter", entry_highlightthickness=0).pack(pady=10, padx=10)
+
 
         self.clientSocket.send(message.encode())
-        
 
-    
 
-    
-        
-# if __name__ == "__main__":
-#     try:
-#         from Tkinter import Tk
-#         from tkMessageBox import showinfo
-#     except ImportError:
-#             from tkinter import Tk
-#             from tkinter.messagebox import showinfo
-
-#     root = Tk()
-
-#     root.geometry("600x600")
-#     root.title("File sharing")
-#     upload = UploadFile(root)
-#     upload.pack(pady=10, padx=10)
-#     file_info = upload.browse()
-#     SearchBox(root, placeholder="Type and press enter", entry_highlightthickness=0).pack(pady=10, padx=10)
-#     Results(root).pack(pady=10, padx=10)
-    
-#     root.mainloop()

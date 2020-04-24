@@ -3,8 +3,9 @@ from socket import *
 from gui import SearchBox
 from gui import UploadFile
 from gui import Results
+from threading import Thread
 
-def open_gui(clientSocket):
+def open_gui(clientSocket,main_client_socket_port,main_client_socket_ip,main_client_socket):
     try:
         from Tkinter import Tk
         from tkMessageBox import showinfo
@@ -14,36 +15,85 @@ def open_gui(clientSocket):
 
     root = Tk()
 
-    #SearchBox(root, placeholder="Type and press enter", entry_highlightthickness=0).pack(pady=10, padx=10)
     root.geometry("600x600")
     root.title("File sharing")
-    upload = UploadFile(root, clientSocket, serverPort)
+    upload = UploadFile(root, clientSocket, serverPort, main_client_socket_port, main_client_socket_ip)
     upload.pack(pady=10, padx=10)
 
-    
-    #Results(root).pack(pady=10, padx=10)
-    #file_info = upload.browse()
-    # вот здесь короче будет 
-    #  message = "<" + file_info + ">"
-    # clientSocket.send(message)
-
-    hostname = gethostname()
-    ip_address = gethostbyname(hostname)
-    print(ip_address)
-    #message ="<"+file_info[0] + "," + file_info[1] +"," + str(file_info[2]) + "," + file_info[3] + "," +str(ip_address) +","+ str(serverPort)+ ">"
-
-    #print(message)
-    #print("\n")
-    #clientSocket.send(message.encode())
+     # start_new_thread(peerClientThread ,(clientSocket,))
+    thread = Thread(target = peerClientThread, args = (clientSocket,main_client_socket_port,main_client_socket_ip,main_client_socket ))
+    thread.start()
+#     root.after_idle(peerClientThread(clientSocket,main_client_socket_port,main_client_socket_ip,main_client_socket))
+#     root.after_idle(thread.join())
+#     thread.join()
 
     root.mainloop()
 
+def peerClientThread(clientSocket,main_client_socket_port,main_client_socket_ip,main_client_socket):
+    print("Client is in thread")
+
+    while main_client_socket:
+        conn, addr = main_client_socket.accept()
+        message = conn.recv(1024)
+        encoding = 'utf-8'
+        rmsg=message[0:].decode(encoding)
+        if("DOWNLOAD" in rmsg):
+
+            print("sending the file ")
+            message = rmsg.split("DOWNLOAD: ")[1]
+            filename = message.split(",")[0]
+            filetype=message.split(",")[1]
+            file=filename+"."+filetype
+            f = open(file,'rb')
+            l = f.read(1024)
+            while (l):
+                conn.send(l)
+                print('Sent ',repr(l))
+                l = f.read(1024)
+                f.close()
+
+#             m="SENDING"
+#             conn.send(m.encode())
+#             checkMessage =conn.recv(1024)
+#             encoding = 'utf-8'
+#             cmsg=checkMessage[0:].decode(encoding)
+#             print(cmsg)
+#             if ("WAITING" == cmsg):
+#                 message = rmsg.split("DOWNLOAD: ")[1]
+#                 filename = message.split(",")[0]
+#                 filetype=message.split(",")[1]
+#                 file=filename+"."+filetype
+#                 f = open(filename,'rb')
+#                 l = f.read(1024)
+#                 while (l):
+#                     conn.send(l)
+#                     print('Sent ',repr(l))
+#                     l = f.read(1024)
+#                     f.close()
+
+        else:
+            print("здеся download ne rabotaet ")
+
+
+
+
+
+#client as a listener
+main_client_socket = socket(AF_INET, SOCK_STREAM)
+main_client_socket.bind(('127.0.0.1', 0))
+main_client_socket.listen(1)
+main_client_socket_port = main_client_socket.getsockname()[1]
+main_client_socket_ip = main_client_socket.getsockname()[0]
+print(main_client_socket_port)
+print(main_client_socket_ip)
+
 
 serverName='localhost'
-serverPort = 9998
-# ip=199.11.11.11
+serverPort = 9999
+
 clientSocket = socket(AF_INET, SOCK_STREAM)
 clientSocket.connect((serverName,serverPort))
+print("Client is ready to send")
 message = b"HELLO\r\n"
 clientSocket.send(message)
 
@@ -51,37 +101,12 @@ receivedMessage = clientSocket.recv(1024)
 encoding = 'utf-8'
 rmsg=receivedMessage[0:].decode('ASCII')
 print(rmsg)
-print("\nStarting the share of files...\n ")
+
 
 if (rmsg == "HI\r\n"):
-    open_gui(clientSocket)
+    open_gui(clientSocket,main_client_socket_port,main_client_socket_ip, main_client_socket)
 else:
     print("здеся")
     close(clientSocket)
-
-
-
-#ДАУНЛОУД 
-serverSocket = socket(AF_INET, SOCK_STREAM)
-serverSocket.bind(('',serverPort))
-serverSocket.listen(1)
-while True:
-    connectionSocket1, addr = serverSocket.accept()
-    receivedMessage = connectionSocket1.recv(1024)
-    encoding = 'utf-8'
-    message = receivedMessage[0:].decode(encoding)
-    if("DOWNLOAD" in message):
-        message = message.split("DOWNLOAD:")[1]
-        filename = message.split(",")[0]
-        f = open(filename,'rb')
-        l = f.read(1024)
-        while (l):
-            clientSocket.send(l)
-            print('Sent ',repr(l))
-            l = f.read(1024)
-            f.close()
-
-
-
 
 

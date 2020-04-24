@@ -1,9 +1,10 @@
 # made by Aliya Almas and Akzhan Suranshy
-from _thread import *
+# from _thread import *
 from socket import *
+from threading import Thread
 
-def peerThread(connectionSocket,clientPort):
-     print(clientPort)
+def peerThread(connectionSocket,addr):
+     print(connectionSocket)
      message = connectionSocket.recv(1024)
 
      encoding = 'utf-8'
@@ -19,23 +20,25 @@ def peerThread(connectionSocket,clientPort):
         print("или здеся")
         connectionSocket.close()
 
-
+    #after browsing the file clients sends file info and server puts it in hash table
      #for i in range(5):
+
      message2 = connectionSocket.recv(1024)
      encoding = 'utf-8'
      msg2=message2[0:].decode(encoding)
-     #print(msg2)
-     filename = msg2.split(",")
-     filename = filename[0].split('<')[1]
+     print(msg2)
+     words = msg2.split(",")
+     filename = words[0].split('<')[1]
      filename= filename.split(".")[0]
+     msg2 = "<" + filename + "," + words[1] + "," + words[2] + "," + words[3] + "," + words[4] + "," + words[5]+">"
      #print(filename)
      if filename not in files:
-         files[filename] = [msg2]
+        files[filename] = [msg2]
      else:
-         files[filename].append(msg2)
-    
+        files[filename].append(msg2)
 
-    # search 
+
+    # search
      message = connectionSocket.recv(1024)
      encoding = 'utf-8'
      message=message[0:].decode(encoding)
@@ -50,7 +53,7 @@ def peerThread(connectionSocket,clientPort):
                 number = len(files[filename])
                 number = str(number)
                 connectionSocket.send(number.encode())
-                
+
                 for i in files[filename]:
                     response = i.encode()
                     print(i)
@@ -60,24 +63,25 @@ def peerThread(connectionSocket,clientPort):
                 connectionSocket.send(response)
 
 
-     #bye 
+    #BYE
      message = connectionSocket.recv(1024)
      encoding = 'utf-8'
      message=message[0:].decode(encoding)
      if message == "BYE":
          connectionSocket.close()
 
-
-
      connectionSocket.close()
 
 
 
 
-serverPort = 9998
+serverPort = 9999
 serverHostname = 'localhost'
 
 files = {}
+# main_socket=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+# main_socket.bind(('127.0.0.1',0))
+# main_socket_port=main_soclet.getsockname()[1]
 
 serverSocket = socket(AF_INET, SOCK_STREAM)
 serverSocket.bind(('',serverPort))
@@ -87,6 +91,9 @@ print ('The server is ready to receive:')
 
 while True:
     connectionSocket1, addr = serverSocket.accept()
-    start_new_thread(peerThread ,(connectionSocket1,addr))
+#     start_new_thread(peerThread ,(connectionSocket1,addr))
+    thread = Thread(target = peerThread, args = (connectionSocket1,addr ))
+    thread.start()
+    thread.join()
 serverSocket.close()
 
